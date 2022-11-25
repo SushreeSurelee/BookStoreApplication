@@ -6,15 +6,25 @@
 --    MobileNumber varchar(200) NOT NULL        
 --);
 
-Create procedure spAddUserData         
-(        
-    @FullName varchar(200),         
+--Create procedure spAddUserData         
+--(        
+--    @FullName varchar(200),         
+--    @EmailId varchar(200),        
+--    @Password varchar(200),        
+--    @MobileNumber varchar(200)        
+--)        
+--as         
+--Begin         
+--    Insert into UserTable (FullName,EmailId,Password, MobileNumber)         
+--    Values (@FullName,@EmailId,@Password, @MobileNumber)         
+--End 
+
+Create procedure spUserLogin         
+(                
     @EmailId varchar(200),        
-    @Password varchar(200),        
-    @MobileNumber varchar(200)        
+    @Password varchar(200)     
 )        
 as         
 Begin         
-    Insert into UserTable (FullName,EmailId,Password, MobileNumber)         
-    Values (@FullName,@EmailId,@Password, @MobileNumber)         
+    select EmailId,Password from UserTable where  EmailId=@EmailId and Password=@Password
 End 

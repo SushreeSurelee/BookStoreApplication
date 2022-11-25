@@ -37,5 +37,26 @@ namespace BookStoreApplication.Controllers
                 throw ex;
             }
         }
+        [HttpPost("Login")]
+        public IActionResult UserLogin(LoginModel login)
+        {
+            try
+            {
+                var result = userBL.UserLogin(login);
+                if (result != null)
+                {
+                    return this.Ok(new { sucess = true, message = "User Login Sucessfull.", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { sucess = false, message = "Login Unsucessfull. Email or password is Invalid." });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
