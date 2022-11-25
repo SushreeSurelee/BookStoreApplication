@@ -74,11 +74,18 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@EmailId", login.EmailId);
                     cmd.Parameters.AddWithValue("@Password", login.Password);
 
-                    var result = cmd.ExecuteScalar();
-                    sqlConnection.Close();
-                    if( result != null)
+                    SqlDataReader result = cmd.ExecuteReader();
+                    if( result.HasRows)
                     {
-                        return GenerateSecurityToken(login.EmailId, login.Password);
+                        int UserId = 0;
+
+                        while (result.Read())
+                        {
+                            login.EmailId = Convert.ToString(result["EmailId"]);
+                            login.Password = Convert.ToString(result["Password"]);
+                            UserId = Convert.ToInt32(result[UserId]);
+                        }
+                        return GenerateSecurityToken(login.EmailId, UserId);
                     }
                     else
                     {
@@ -91,8 +98,80 @@ namespace RepositoryLayer.Service
 
                 throw ex;
             }
+            finally 
+            { sqlConnection.Close(); }
         }
-        public string GenerateSecurityToken(string email, string password)
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                using (this.sqlConnection)
+                {
+                    SqlCommand cmd = new SqlCommand("spforgetPW", this.sqlConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    sqlConnection.Open();
+
+                    cmd.Parameters.AddWithValue("@EmailId", email);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.RecordsAffected != 0)
+                    {
+                        int userId = 0;
+                        while (reader.Read())
+                        {
+                            email = Convert.ToString(reader["EmailId"]);
+                            userId = Convert.ToInt32(reader["UserId"]);
+
+                        }
+                        sqlConnection.Close();
+                        var token = GenerateSecurityToken(email,userId);
+                        MSMQModel mSMQModel = new MSMQModel();
+                        mSMQModel.sendData2Queue(token);
+                        return token.ToString();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }  
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool ResetPassword(string email, string password, string confirmPassword)
+        {
+            try
+            {
+                using (this.sqlConnection)
+                {
+                    if (password.Equals(confirmPassword))
+                    {
+                        SqlCommand cmd = new SqlCommand("spResetPW", this.sqlConnection);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        sqlConnection.Open();
+
+                        cmd.Parameters.AddWithValue("@EmailId", email);
+                        cmd.Parameters.AddWithValue("@Password", password);
+
+                        var result = cmd.ExecuteNonQuery();
+                        sqlConnection.Close();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                    
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string GenerateSecurityToken(string email, long userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Configuration["JWT:Key"]);
@@ -101,7 +180,7 @@ namespace RepositoryLayer.Service
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Email, email),
-                    new Claim("Password",password)
+                    new Claim("UserId", userId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(80),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

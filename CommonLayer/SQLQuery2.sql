@@ -19,12 +19,38 @@
 --    Values (@FullName,@EmailId,@Password, @MobileNumber)         
 --End 
 
-Create procedure spUserLogin         
-(                
-    @EmailId varchar(200),        
-    @Password varchar(200)     
-)        
-as         
-Begin         
-    select EmailId,Password from UserTable where  EmailId=@EmailId and Password=@Password
-End 
+--alter procedure spUserLogin         
+--(                
+--    @EmailId varchar(200),        
+--    @Password varchar(200)     
+--)        
+--as         
+--Begin         
+--    select UserId,EmailId,Password from UserTable where  EmailId=@EmailId and Password=@Password
+--End 
+
+
+
+--alter procedure spforgetPW       
+--( 
+    
+--    @EmailId varchar(200)    
+--)        
+--as         
+--Begin         
+--    select UserId,EmailId from UserTable where  EmailId=@EmailId
+--End 
+
+Create procedure spResetPW          
+(     
+   @EmailId varchar(200),
+   @Password varchar(200)
+)          
+as          
+begin          
+   Update UserTable           
+   set Password=@Password                    
+   where EmailId=@EmailId          
+End     
+
+--select * from UserTable
