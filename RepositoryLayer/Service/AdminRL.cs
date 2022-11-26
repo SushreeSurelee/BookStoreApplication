@@ -1,73 +1,35 @@
 ﻿using CommonLayer.Model;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using RepositoryLayer.Interface;
 
 namespace RepositoryLayer.Service
 {
-    public class UserRL : IUserRL
+    public class AdminRL : IAdminRL
     {
         public IConfiguration Configuration { get; }
 
-        public UserRL(IConfiguration configuration)
+        public AdminRL(IConfiguration configuration)
         {
             this.Configuration = configuration;
         }
 
         public static string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookStore;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         SqlConnection sqlConnection = new SqlConnection(ConnectionString);
-
-        public Registration UserRegistration(Registration userRegistration)
+        public string AdminLogin(LoginModel login)
         {
             try
             {
                 using (this.sqlConnection)
                 {
-                    SqlCommand cmd = new SqlCommand("spAddUserData", this.sqlConnection);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    this.sqlConnection.Open();
-
-                    cmd.Parameters.AddWithValue("@FullName", userRegistration.FullName);
-                    cmd.Parameters.AddWithValue("@EmailId", userRegistration.EmailId);
-                    cmd.Parameters.AddWithValue("@Password", userRegistration.Password);
-                    cmd.Parameters.AddWithValue("@MobileNumber", userRegistration.MobileNumber);
-
-                    var result = cmd.ExecuteNonQuery();
-                    if (result != 0)
-                    {
-                        return userRegistration;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-            finally
-            {
-                this.sqlConnection.Close();
-            }
-        }
-        public string UserLogin(LoginModel login)
-        {
-            try
-            {
-                using (this.sqlConnection)
-                {
-                    SqlCommand cmd = new SqlCommand("spUserLogin", this.sqlConnection);
+                    SqlCommand cmd = new SqlCommand("spAdminLogin", this.sqlConnection);
                     cmd.CommandType = CommandType.StoredProcedure;
                     sqlConnection.Open();
 
@@ -75,7 +37,7 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@Password", login.Password);
 
                     SqlDataReader result = cmd.ExecuteReader();
-                    if( result.HasRows)
+                    if (result.HasRows)
                     {
                         int UserId = 0;
 
@@ -98,7 +60,7 @@ namespace RepositoryLayer.Service
 
                 throw ex;
             }
-            finally 
+            finally
             { sqlConnection.Close(); }
         }
         public string ForgetPassword(string email)
@@ -124,7 +86,7 @@ namespace RepositoryLayer.Service
 
                         }
                         sqlConnection.Close();
-                        var token = GenerateSecurityToken(email,userId);
+                        var token = GenerateSecurityToken(email, userId);
                         MSMQModel mSMQModel = new MSMQModel();
                         mSMQModel.sendData2Queue(token);
                         return token.ToString();
@@ -133,7 +95,7 @@ namespace RepositoryLayer.Service
                     {
                         return null;
                     }
-                }  
+                }
             }
             catch (Exception ex)
             {
@@ -164,7 +126,7 @@ namespace RepositoryLayer.Service
                         return false;
                     }
                 }
-                    
+
             }
             catch (Exception ex)
             {
@@ -179,7 +141,7 @@ namespace RepositoryLayer.Service
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Role,"User"),
+                    new Claim(ClaimTypes.Role,"Admin"),
                     new Claim(ClaimTypes.Email, email),
                     new Claim("UserId", userId.ToString())
                 }),
