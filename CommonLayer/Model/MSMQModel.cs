@@ -33,9 +33,7 @@ namespace CommonLayer.Model
                 var msg = messageQ.EndReceive(e.AsyncResult);
                 string token = msg.Body.ToString();
                 string subject = "Book Store Reset Link";
-                string body = "<body><p>Dear Sushree,<br><br>" +
-                    "We have sent you a link for resetting your password.<br>" +
-                    "Please copy it and paste in your swagger authorization.</body>" + token;
+                string body = "Please copy and paste in your swagger authorization." + token;
 
                 var smtp = new SmtpClient("smtp.gmail.com")
                 {
