@@ -38,5 +38,17 @@ namespace BussinesLayer.Service
                 throw ex;
             }
         }
+        public BookModel GetBookByID(int bookId)
+        {
+            try
+            {
+                return this.bookRL.GetBookByID(bookId);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

@@ -96,5 +96,46 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public BookModel GetBookByID(int bookId)
+        {
+            try
+            {
+                using (this.sqlConnection)
+                {
+                    BookModel bookModel = new BookModel();
+                    SqlCommand cmd = new SqlCommand("spGetBookById", this.sqlConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    this.sqlConnection.Open();
+                    cmd.Parameters.AddWithValue("@BookId", bookId);
+
+                    SqlDataReader result = cmd.ExecuteReader();
+                    if(result.HasRows)
+                    {
+                        while(result.Read())
+                        {
+                            bookModel.BookName = Convert.ToString(result["BookName"]);
+                            bookModel.Author = Convert.ToString(result["Author"]);
+                            bookModel.BookImage = Convert.ToString(result["BookImage"]);
+                            bookModel.BookRating = Convert.ToDouble(result["BookRating"]);
+                            bookModel.RatingCount = Convert.ToInt32(result["RatingCount"]);
+                            bookModel.DiscountPrice = Convert.ToDouble(result["DiscountPrice"]);
+                            bookModel.ActualPrice = Convert.ToDouble(result["ActualPrice"]);
+                            bookModel.BookDetail = Convert.ToString(result["BookDetail"]);
+                        }
+                        this.sqlConnection.Close();
+                        return bookModel;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

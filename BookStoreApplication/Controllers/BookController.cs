@@ -1,4 +1,5 @@
 ﻿using BussinesLayer.Interface;
+using BussinesLayer.Service;
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +41,7 @@ namespace BookStoreApplication.Controllers
             }
         }
         [Authorize]
-        [HttpGet("GetAllBooks")]
+        [HttpGet("GetBooks")]
         public IActionResult GetAllBooks()
         {
             try
@@ -48,11 +49,32 @@ namespace BookStoreApplication.Controllers
                 var result = bookBL.GetAllBooks();
                 if (result != null)
                 {
-                    return Created("", new { data = result });
+                    return Ok(new { data = result });
                 }
                 else
                 {
-                    return BadRequest(new { success = false, message = "Faild to getall Book" });
+                    return BadRequest(new { success = false, message = "Faild to get all Book" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        [HttpGet("GetBookbyID")]
+        public IActionResult GetBookByID(int bookId)
+        {
+            try
+            {
+                var result = bookBL.GetBookByID(bookId);
+                if (result != null)
+                {
+                    return Ok(new { data = result });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Faild to get all Book" });
                 }
             }
             catch (Exception ex)
@@ -62,4 +84,5 @@ namespace BookStoreApplication.Controllers
             }
         }
     }
+    
 }

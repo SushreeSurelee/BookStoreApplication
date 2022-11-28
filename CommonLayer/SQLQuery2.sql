@@ -99,11 +99,21 @@
 --    Values (@BookName,@Author,@BookImage,@BookRating,@RatingCount,@DiscountPrice,@ActualPrice,@BookDetail)         
 --End 
 
-Create procedure spGetAllBooks      
+--Create procedure spGetAllBooks      
+--as      
+--Begin      
+--    select *      
+--    from BookTable      
+--End
+
+Create procedure spGetBookById
+(
+    @BookId int
+)
 as      
 Begin      
     select *      
-    from BookTable      
+    from BookTable where BookId=@BookId     
 End
 
 --select * from UserTable
