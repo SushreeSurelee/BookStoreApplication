@@ -32,6 +32,7 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@DiscountPrice", book.DiscountPrice);
                     cmd.Parameters.AddWithValue("@ActualPrice", book.ActualPrice);
                     cmd.Parameters.AddWithValue("@BookDetail", book.BookDetail);
+                    cmd.Parameters.AddWithValue("@Quantity", book.Quantity);
 
                     var result = cmd.ExecuteNonQuery();
                     this.sqlConnection.Close();
@@ -78,6 +79,7 @@ namespace RepositoryLayer.Service
                                 DiscountPrice = Convert.ToDouble(result["DiscountPrice"]),
                                 ActualPrice = Convert.ToDouble(result["ActualPrice"]),
                                 BookDetail = Convert.ToString(result["BookDetail"]),
+                                Quantity = Convert.ToInt32(result["Quantity"])
                             };
                             bookList.Add(book);
                         }
@@ -121,6 +123,7 @@ namespace RepositoryLayer.Service
                             bookModel.DiscountPrice = Convert.ToDouble(result["DiscountPrice"]);
                             bookModel.ActualPrice = Convert.ToDouble(result["ActualPrice"]);
                             bookModel.BookDetail = Convert.ToString(result["BookDetail"]);
+                            bookModel.Quantity = Convert.ToInt32(result["Quantity"]);
                         }
                         this.sqlConnection.Close();
                         return bookModel;
@@ -129,6 +132,73 @@ namespace RepositoryLayer.Service
                     {
                         return null;
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public BookModel UpdateBook(int bookId,BookModel book)
+        {
+            try
+            {
+                using (this.sqlConnection)
+                {
+                    SqlCommand cmd = new SqlCommand("spUpdateBook", this.sqlConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    this.sqlConnection.Open();
+
+                    cmd.Parameters.AddWithValue("@BookId", bookId);
+                    cmd.Parameters.AddWithValue("@BookName", book.BookName);
+                    cmd.Parameters.AddWithValue("@Author", book.Author);
+                    cmd.Parameters.AddWithValue("@BookImage", book.BookImage);
+                    cmd.Parameters.AddWithValue("@BookRating", book.BookRating);
+                    cmd.Parameters.AddWithValue("@RatingCount", book.RatingCount);
+                    cmd.Parameters.AddWithValue("@DiscountPrice", book.DiscountPrice);
+                    cmd.Parameters.AddWithValue("@ActualPrice", book.ActualPrice);
+                    cmd.Parameters.AddWithValue("@BookDetail", book.BookDetail);
+                    cmd.Parameters.AddWithValue("@Quantity", book.Quantity);
+                    var result = cmd.ExecuteNonQuery();
+                    this.sqlConnection.Close();
+                    if (result !=0)
+                    {
+                        return book;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public bool DeleteBook(int bookId)
+        {
+            try
+            {
+                using (this.sqlConnection)
+                {
+                    SqlCommand cmd = new SqlCommand("spDeleteBook", this.sqlConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    this.sqlConnection.Open();
+                    cmd.Parameters.AddWithValue("@BookId", bookId);
+                    var result = cmd.ExecuteNonQuery();
+                    this.sqlConnection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
                 }
             }
             catch (Exception ex)

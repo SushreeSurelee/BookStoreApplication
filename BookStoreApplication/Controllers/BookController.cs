@@ -40,6 +40,7 @@ namespace BookStoreApplication.Controllers
                 throw ex;
             }
         }
+
         [Authorize]
         [HttpGet("GetBooks")]
         public IActionResult GetAllBooks()
@@ -62,6 +63,7 @@ namespace BookStoreApplication.Controllers
                 throw ex;
             }
         }
+
         [HttpGet("GetBookbyID")]
         public IActionResult GetBookByID(int bookId)
         {
@@ -75,6 +77,52 @@ namespace BookStoreApplication.Controllers
                 else
                 {
                     return BadRequest(new { success = false, message = "Faild to get all Book" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [Authorize(Roles = Role.Admin)]
+        [HttpPost("UpdateBook")]
+        public IActionResult UpdateBook(int bookId, BookModel book)
+        {
+            try
+            {
+                var result = bookBL.UpdateBook(bookId, book);
+                if (result != null)
+                {
+                    return this.Ok(new { success = true, message = "Book Updated Successfull", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to update the book details" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [Authorize(Roles = Role.Admin)]
+        [HttpPost("DeleteBook")]
+        public IActionResult DeleteBook(int bookId)
+        {
+            try
+            {
+                var result = bookBL.DeleteBook(bookId);
+                if (result)
+                {
+                    return this.Ok(new { success = true, message = "Book Deleted Successfull" });
+                }
+                else
+                {
+                    return this.BadRequest(new { success = false, message = "Unable to delete the book" });
                 }
             }
             catch (Exception ex)

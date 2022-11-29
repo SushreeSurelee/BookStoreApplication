@@ -14,5 +14,6 @@ namespace CommonLayer.Model
         public double DiscountPrice { get; set; }
         public double ActualPrice { get; set; }
         public string BookDetail { get; set; }
+        public int Quantity { get; set; }
     }
 }
