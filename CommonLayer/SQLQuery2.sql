@@ -144,14 +144,62 @@
 --   WHERE BookId=@BookId
 --End
 
-create procedure spDeleteBook
+--create procedure spDeleteBook
+--(
+--     @bookid int
+--)
+--as
+--BEGIN
+--    delete from BooksTable where bookid=@bookid 
+--end
+
+--create table CartTable(
+--	CartId int identity (1,1) primary key,
+--	Quantity int default 1,
+--	UserId int not null foreign key (UserId) references UserTable(UserId),
+--	BookId int not null foreign key (BookId) references BooksTable(BookId)
+--	)
+
+--create procedure spAddToCart
+--(
+--    @Quantity int,
+--	@UserId int,
+--	@BookId int
+--)
+--as
+--BEGIN
+--IF (NOT EXISTS(SELECT * FROM CartTable WHERE BookId = @BookId and UserId=@UserId))
+--		begin
+--		insert into CartTable
+--		values(@Quantity, @UserId, @BookId);
+--		end
+--end
+
+--create procedure spUpdateCart
+--(
+--	@CartId int,
+--	@Quantity int
+--)
+--as
+--BEGIN
+--	update CartTable set Quantity = @Quantity where CartId = @CartId;
+--END 
+
+--create procedure spDeleteCart
+--(
+--	@CartId int
+--)
+--as
+--BEGIN
+--	delete from CartTable where CartId = @CartId;
+--END
+
+create procedure spGetAllCart 
 (
-     @bookid int
+    @UserId int
 )
-as
-BEGIN
-    delete from BooksTable where bookid=@bookid 
-end
-
-
---select * from UserTable
+as      
+Begin      
+    select *      
+    from CartTable where UserId=@UserId;
+End
