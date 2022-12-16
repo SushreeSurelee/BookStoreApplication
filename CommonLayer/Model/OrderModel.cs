@@ -4,10 +4,9 @@ using System.Text;
 
 namespace CommonLayer.Model
 {
-    public class CartModel
+    public class OrderModel
     {
         public int BookId { get; set; }
-
-        public int CartQuantity { get; set; }
+        public int AddressId { get; set; }
     }
 }

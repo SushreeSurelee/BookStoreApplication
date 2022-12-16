@@ -42,7 +42,14 @@ namespace BookStoreApplication
             services.AddTransient<IBookBL, BookBL>();
             services.AddTransient<ICartRL, CartRL>();
             services.AddTransient<ICartBL, CartBL>();
-
+            services.AddTransient<IWishlistRL, WishlistRL>();
+            services.AddTransient<IWishlistBL, WishlistBL>();
+            services.AddTransient<IAddressBL, AddressBL>();
+            services.AddTransient<IAddressRL, AddressRL>();
+            services.AddTransient<IFeedbackBL, FeedbackBL>();
+            services.AddTransient<IFeedbackRL, FeedbackRL>();
+            services.AddTransient<IOrderBL, OrderBL>();
+            services.AddTransient<IOrderRL, OrderRL>();
 
             services.AddSwaggerGen(setup =>
             {

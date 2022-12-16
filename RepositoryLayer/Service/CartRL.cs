@@ -22,7 +22,7 @@ namespace RepositoryLayer.Service
                     cmd.CommandType = CommandType.StoredProcedure;
                     this.sqlConnection.Open();
 
-                    cmd.Parameters.AddWithValue("@Quantity", cart.Quantity);
+                    cmd.Parameters.AddWithValue("@CartQuantity", cart.CartQuantity);
                     cmd.Parameters.AddWithValue("@BookId", cart.BookId);
                     cmd.Parameters.AddWithValue("@UserId", userId);
 
@@ -54,7 +54,7 @@ namespace RepositoryLayer.Service
                     cmd.CommandType = CommandType.StoredProcedure;
                     this.sqlConnection.Open();
                     cmd.Parameters.AddWithValue("@CartId", cartId);
-                    cmd.Parameters.AddWithValue("@Quantity", cart.Quantity);
+                    cmd.Parameters.AddWithValue("@CartQuantity", cart.CartQuantity);
                     var result = cmd.ExecuteNonQuery();
                     this.sqlConnection.Close();
 
@@ -101,14 +101,14 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public List<CartModel> GetCart(int userId)
+        public List<GetCartModel> GetCart(int userId)
         {
             try
             {
                 using (this.sqlConnection)
                 {
-                    List<CartModel> cartlist = new List<CartModel>();
-                    SqlCommand cmd = new SqlCommand("spGetAllCart", this.sqlConnection);
+                    List<GetCartModel> cartlist = new List<GetCartModel>();
+                    SqlCommand cmd = new SqlCommand("spgetallcart", this.sqlConnection);
                     cmd.CommandType = CommandType.StoredProcedure;
                     this.sqlConnection.Open();
                     cmd.Parameters.AddWithValue("@UserId", userId);
@@ -118,10 +118,18 @@ namespace RepositoryLayer.Service
                     {
                         while (result.Read())
                         {
-                            CartModel cart = new CartModel
+                            GetCartModel cart = new GetCartModel
                             {
-                                Quantity = Convert.ToInt32(result["Quantity"]),
-                                BookId = Convert.ToInt32(result["BookId"])
+                                BookId = Convert.ToInt32(result["BookId"]),
+                                UserId = Convert.ToInt32(result["UserId"]),
+                                CartId = Convert.ToInt32(result["CartId"]),
+                                BookName = Convert.ToString(result["BookName"]),
+                                Author = Convert.ToString(result["Author"]),
+                                BookImage = Convert.ToString(result["BookImage"]),
+                                DiscountPrice = Convert.ToDouble(result["DiscountPrice"]),
+                                ActualPrice = Convert.ToDouble(result["ActualPrice"]),
+                                CartQuantity = Convert.ToInt32(result["CartQuantity"]),
+                                BookQuantity = Convert.ToInt32(result["Quantity"]),
                             };
                             cartlist.Add(cart);
                         }

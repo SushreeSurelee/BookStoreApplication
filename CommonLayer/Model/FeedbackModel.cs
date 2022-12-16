@@ -4,10 +4,10 @@ using System.Text;
 
 namespace CommonLayer.Model
 {
-    public class CartModel
+    public class FeedbackModel
     {
+        public double BookRating { get; set; }
+        public string Comment { get; set; }
         public int BookId { get; set; }
-
-        public int CartQuantity { get; set; }
     }
 }

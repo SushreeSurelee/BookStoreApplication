@@ -71,6 +71,7 @@ namespace RepositoryLayer.Service
                         {
                             BookModel book = new BookModel
                             {
+                                BookId = Convert.ToInt32(result["BookId"]),
                                 BookName = Convert.ToString(result["BookName"]),
                                 Author = Convert.ToString(result["Author"]),
                                 BookImage = Convert.ToString(result["BookImage"]),
@@ -115,6 +116,7 @@ namespace RepositoryLayer.Service
                     {
                         while(result.Read())
                         {
+                            bookModel.BookId = Convert.ToInt32(result["BookId"]);
                             bookModel.BookName = Convert.ToString(result["BookName"]);
                             bookModel.Author = Convert.ToString(result["Author"]);
                             bookModel.BookImage = Convert.ToString(result["BookImage"]);

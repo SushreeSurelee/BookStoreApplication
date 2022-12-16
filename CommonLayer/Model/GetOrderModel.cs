@@ -4,17 +4,19 @@ using System.Text;
 
 namespace CommonLayer.Model
 {
-    public class BookModel
+    public class GetOrderModel
     {
+        public int OrderId { get; set; }
+        public int AddressId { get; set; }
+        public int UserId { get; set; }
         public int BookId { get; set; }
+        public int OrderQty { get; set; }
+        public DateTime OrderDate { get; set; }
+        public double TotalPrice { get; set; }
         public string BookName { get; set; }
-        public string Author { get; set; }
         public string BookImage { get; set; }
-        public double BookRating { get; set; }
-        public int RatingCount { get; set; }
+        public string Author { get; set; }
         public double DiscountPrice { get; set; }
         public double ActualPrice { get; set; }
-        public string BookDetail { get; set; }
-        public int Quantity { get; set; }
     }
 }
